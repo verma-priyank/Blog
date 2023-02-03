@@ -1,3 +1,3 @@
 # Blog
-this is my first blog with the help of express and node.
+this is my first blog with the help of node and express.
 https://blog-8vwt.onrender.com
