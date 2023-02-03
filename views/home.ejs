@@ -1,0 +1,19 @@
+
+<%- include('./partials/header') -%>
+
+    <h1>Home</h1>
+    <p><%= content %></p>
+
+   <% posts.map(item =>{    %>
+   <%  const slicedcontent = item.post.slice(0 , 100)  %>
+   <%  const title = item.title;  %>
+   
+     <h2><%= item.title %></h2>
+     <p><%= slicedcontent %>...<a href="posts/<%=title %>">Read More</a></p>
+
+    <% })  %>
+      
+
+
+
+    <%- include('./partials/footer') -%>
