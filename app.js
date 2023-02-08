@@ -3,6 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const mongoose = require("mongoose")
 const _ = require("lodash")
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -15,10 +16,24 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
+mongoose.set('strictQuery', false);
+mongoose.connect("mongodb+srv://priyank-verma:Priyank7080@cluster0.7tqzmo5.mongodb.net/postDB" ,{useNewUrlParser:true} );
+const PostSchema = new mongoose.Schema({
+  title:String,
+  post:String
+})
+const Post = mongoose.model("Post" , PostSchema)
 
 app.get("/" , (req , res)=>{
+  Post.find({},(err,result)=>{
+    if(err){
+      console.log(err)
+    }else{
+      // console.log(result)
+      res.render("home",{content:homeStartingContent , posts : result })
+    }
+  })
   
-  res.render("home",{content:homeStartingContent , posts : contents })
   
 })
 
@@ -36,6 +51,11 @@ app.post("/compose" , (req,res)=>{
    
   const newtitle = req.body.titlecontent;
   const newpost = req.body.postcontent;
+  const post = new Post({
+    title:newtitle,
+    post:newpost
+  })
+  post.save()
   const newpostcontent = {title : newtitle , post : newpost}
   contents.push(newpostcontent)
   res.redirect("/")
@@ -44,19 +64,35 @@ app.post("/compose" , (req,res)=>{
 
 app.get("/posts/:topic" , (req,res)=>{
   const requestedtopic = _.lowerCase(req.params.topic)
- console.log(requestedtopic) 
- 
+//  console.log(requestedtopic) 
+ Post.find({} , (err, result)=>{
+  if(!err){
+    result.map(item=>{
+      const searchededtopic = _.lowerCase(item.title);
+      if(searchededtopic===requestedtopic){
+        const postcontent = item.post
+        const postheading = _.upperFirst(searchededtopic);
+        res.render("post" ,{heading:postheading , Content:postcontent })
+      }
+      
+    
+    })
+    
+  }else{
+    console.log(err)
+  }
+ })
   
-  contents.map(item=>{
-    const searchededtopic = _.lowerCase(item.title);
+  // contents.map(item=>{
+  //   const searchededtopic = _.lowerCase(item.title);
    
-    console.log(searchededtopic)
-    if(searchededtopic===requestedtopic){
-      const postcontent = item.post
-      const postheading = _.upperFirst(searchededtopic);
-      res.render("post" ,{heading:postheading , Content:postcontent })
-    }
-  })
+  //   console.log(searchededtopic)
+  //   if(searchededtopic===requestedtopic){
+  //     const postcontent = item.post
+  //     const postheading = _.upperFirst(searchededtopic);
+  //     res.render("post" ,{heading:postheading , Content:postcontent })
+  //   }
+  // })
 })
 
 
