@@ -34,3 +34,21 @@
 	font-size: 12px;
   color: #fff;
 }
+.blog-link{
+    margin: 11px;
+    margin-top: 45px;
+    background-color: #1abc9c;
+    color: white;
+    padding: 5px;
+    position: relative;
+    top: 15px;
+}
+.portfolio-link{
+    margin: 11px;
+    margin-top: 45px;
+    background-color: #1abc9c;
+    color: white;
+    padding: 5px;
+    position: relative;
+    top: 15px;
+}
