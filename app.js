@@ -19,10 +19,7 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 mongoose.set("strictQuery", false);
-mongoose.connect(
-  "mongodb+srv://priyank-verma:Priyank7080@cluster0.7tqzmo5.mongodb.net/postDB",
-  { useNewUrlParser: true }
-);
+
 const PostSchema = new mongoose.Schema({
   title: String,
   post: String,
@@ -95,6 +92,13 @@ app.get("/posts/:topic", (req, res) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, function () {
-  console.log("Server started on port " + port);
-});
+mongoose
+  .connect(
+    "mongodb+srv://priyank-verma:Priyank7080@cluster0.7tqzmo5.mongodb.net/postDB",
+    { useNewUrlParser: true }
+  )
+  .then(() => {
+    app.listen(port, function () {
+      console.log("Server started on port " + port);
+    });
+  }).catch((e)=> console.log(e));
